@@ -71,9 +71,9 @@ public class Wordle {
             }          
                 if(checked.equals("11111")){
                     gw.showMessage("CORRECT!");
-                    for(int r = 0; r < 6; r++){
-                        for(int c = 0; c < gw.getCurrentRow() + 1; c++){
-                            if(gw.getSquareColor(r, c).equals(WordleGWindow.CORRECT_COLOR)){
+                    for(int r = 0; r <= gw.getCurrentRow(); r++){
+                        for(int c = 0; c <= WordleGWindow.N_COLS; c++){
+                            if(gw.getSquareColor(r, c).equals(WordleGWindow.CORRECT_COLOR) || gw.getSquareColor(r, c).equals(WordleGWindow.PRESENT_COLOR)){
                                 gw.setSquareColor(r, c, rainbow[(int)(Math.random() * rainbow.length)]);
                                 gw.setKeyColor(gw.getSquareLetter(r, c),  rainbow[(int)(Math.random() * rainbow.length)]);
                             }
