@@ -12,10 +12,11 @@ public class Wordle {
     String word;
     String checked;
     String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    Color[] rainbow = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA};
     public void run() {
         gw = new WordleGWindow();
         gw.addEnterListener((s) -> enterAction(s));
-       word = WordleDictionary.FIVE_LETTER_WORDS[(int)(Math.random() * WordleDictionary.FIVE_LETTER_WORDS.length)];
+        word = WordleDictionary.FIVE_LETTER_WORDS[(int)(Math.random() * WordleDictionary.FIVE_LETTER_WORDS.length)];
         word = word.toUpperCase();
         for(int i = 0; i < 5; i++){
             gw.setSquareLetter(0, i, word.substring(i, i+1));
@@ -30,46 +31,59 @@ public class Wordle {
  * passing in the string of characters on the current row.
  */
 
-    public void enterAction(String s) {        
+    public void enterAction(String s) {
+        int index;        
         checked = word;
         boolean b = false;
         for(int i = 0; i < WordleDictionary.FIVE_LETTER_WORDS.length; i++){
             if((WordleDictionary.FIVE_LETTER_WORDS[i].equalsIgnoreCase(s))){
                 b = true;
-                gw.showMessage("b is true");
             }
         }
         if(b){
             for(int i = 0; i < 5; i++){
-                int index = checked.indexOf(s.substring(i, i+1));
+                index = checked.indexOf(s.substring(i, i+1));
+                if(index < 0){
+                    gw.setSquareColor(gw.getCurrentRow(), i, WordleGWindow.MISSING_COLOR);
+                    gw.setKeyColor(s.substring(i, i+1), WordleGWindow.MISSING_COLOR);
+                }
+            }
+            for(int i = 0; i < 5; i++){
+                index = checked.indexOf(s.substring(i, i+1));
                 if(s.substring(i, i+1).equals(checked.substring(i, i+1))){
                     gw.setSquareColor(gw.getCurrentRow(), i, WordleGWindow.CORRECT_COLOR);
                     gw.setKeyColor(s.substring(i, i+1), WordleGWindow.CORRECT_COLOR);
                     s = s.substring(0, i) + "2" + s.substring(i+1);
                     checked = checked.substring(0, i) + "1" + checked.substring(i+1);
                 }
-                else if(index >= 0 && s.indexOf(s.substring(i, i+1)) >=0){
+            }
+            for(int i = 0; i < 5; i++){
+                index = checked.indexOf(s.substring(i, i+1));
+                if(index >= 0 && s.indexOf(s.substring(i, i+1)) >=0){
                     gw.setSquareColor(gw.getCurrentRow(), i, WordleGWindow.PRESENT_COLOR);
-                    gw.setKeyColor(s.substring(i, i+1), WordleGWindow.PRESENT_COLOR);
-                    s = s.substring(0, i) + "2" + s.substring(i+1);
-                    checked = (checked.substring(0, index) + "1" + checked.substring(index + 1));
-                    /*
-                    if(gw.getKeyColor(s.substring(i, i+1)) != WordleGWindow.CORRECT_COLOR){
+                    if(gw.getKeyColor(s.substring(i, i+1).toUpperCase()) != WordleGWindow.CORRECT_COLOR){
                         gw.setKeyColor(s.substring(i, i+1), WordleGWindow.PRESENT_COLOR);
                     }
-                    */               
+                    s = s.substring(0, i) + "2" + s.substring(i+1);
+                    checked = (checked.substring(0, index) + "1" + checked.substring(index + 1));                   
                 }
-
+            }          
                 if(checked.equals("11111")){
                     gw.showMessage("CORRECT!");
+                    for(int i = 0; i < 5; i++){
+                        for(int j = gw.getCurrentRow(); j < 0; j--){
+                            gw.setSquareColor(j, i, rainbow[(int)(Math.random() * rainbow.length)]);
+                        }
+                    }
+                    gw.setCurrentRow(8);
                 }
+                gw.setCurrentRow(gw.getCurrentRow()+1);
             }
-            gw.setCurrentRow(gw.getCurrentRow()+1);
-        }
         else{
             gw.showMessage("Not in word list");
         }
     }
+    
 
 /* Startup code */
     public static void main(String[] args) {
