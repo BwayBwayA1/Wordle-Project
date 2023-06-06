@@ -12,15 +12,16 @@ public class Wordle {
     String word;
     String checked;
     String alphabet = "abcdefghijklmnopqrstuvwxyz";
-    Color[] rainbow = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA};
+    Color[] rainbow = {Color.RED, Color.ORANGE, Color.YELLOW, Color.CYAN, Color.BLUE, Color.MAGENTA};
     public void run() {
         gw = new WordleGWindow();
         gw.addEnterListener((s) -> enterAction(s));
-        word = WordleDictionary.FIVE_LETTER_WORDS[(int)(Math.random() * WordleDictionary.FIVE_LETTER_WORDS.length)];
+        //word = WordleDictionary.FIVE_LETTER_WORDS[(int)(Math.random() * WordleDictionary.FIVE_LETTER_WORDS.length)];
+        word = "FLOWN";
         word = word.toUpperCase();
-        for(int i = 0; i < 5; i++){
-            gw.setSquareLetter(0, i, word.substring(i, i+1));
-        }
+        // for(int i = 0; i < 5; i++){
+        //     gw.setSquareLetter(0, i, word.substring(i, i+1));
+        // }
         for(int i = 0; i < alphabet.length(); i++){
             gw.setKeyColor(alphabet.substring(i, i+1), Color.WHITE);
         }
@@ -70,9 +71,12 @@ public class Wordle {
             }          
                 if(checked.equals("11111")){
                     gw.showMessage("CORRECT!");
-                    for(int i = 0; i < 5; i++){
-                        for(int j = gw.getCurrentRow(); j < 0; j--){
-                            gw.setSquareColor(j, i, rainbow[(int)(Math.random() * rainbow.length)]);
+                    for(int r = 0; r < 6; r++){
+                        for(int c = 0; c < gw.getCurrentRow() + 1; c++){
+                            if(gw.getSquareColor(r, c).equals(WordleGWindow.CORRECT_COLOR)){
+                                gw.setSquareColor(r, c, rainbow[(int)(Math.random() * rainbow.length)]);
+                                gw.setKeyColor(gw.getSquareLetter(r, c),  rainbow[(int)(Math.random() * rainbow.length)]);
+                            }
                         }
                     }
                     gw.setCurrentRow(8);
